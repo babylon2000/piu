@@ -453,7 +453,7 @@ enum states new_state(enum states current_state, enum signals sgn)
 	return st;
 }
 
-//Обработчик для клавиш PC7 u PC3
+/*
 char* get_value_address(enum states st, enum signals sgn, enum digit current_digit, char* array_values)
 {
 	static char* return_address;
@@ -665,6 +665,100 @@ char* get_value_address(enum states st, enum signals sgn, enum digit current_dig
         break;
 	}
 	return return_address;
+}*/
+enum digit get_new_dig(enum states st, enum signals sgn, enum digit current_digit)
+{
+	switch(sgn)
+	{
+		case pc7:
+			switch(st)
+			{
+				case standby:
+					return current_digit;
+				break;
+
+				case code:
+					switch(current_digit)
+					{
+						case dig1:
+							return dig3;
+						break;
+
+						case dig2:
+							return dig1;
+						break;
+
+						case dig3:
+							return dig2;
+						break;
+					}
+				break;
+
+				case vb:
+					return current_digit;
+				break;
+
+				case va:
+					switch(current_digit)
+					{
+						case dig2:
+							return dig3;
+						break;
+
+						case dig3:
+							return dig2;
+						break;
+					}
+				break;
+
+				case configuration:
+					switch(current_digit)
+					{
+						case dig1:
+							return dig3;
+						break;
+
+						case dig2:
+							return dig1;
+						break;
+
+						case dig3:
+							return dig2;
+						break;
+					}
+				break;
+
+				case time:
+					switch(current_digit)
+					{
+						case dig0:
+							return dig3;
+						break;
+
+						case dig1:
+							return dig0;
+						break;
+
+						case dig2:
+							return dig1;
+						break;
+
+						case dig3:
+							return dig2;
+						break;
+					}
+				break;
+
+				case rd:
+					return current_digit;
+				break;
+
+				case power:
+					return current_digit;
+				break;
+			}
+		break;
+	}
 }
 
 enum value get_new_value(enum value current_value, enum signals sg, enum value (*f)(enum value v))
