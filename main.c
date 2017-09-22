@@ -13,7 +13,7 @@ enum value {null, one, two, three, four, five, six, seven, eight, nine};
 volatile static uint8_t porthistory = 0xff;
 volatile unsigned int cnt3 = 0, cnt7 = 0;
 
-char v[4] = {0, 1, 2, 3};
+char v[4];
 char* vptr = v;
 
 enum states new_state(enum states, enum signals);
@@ -25,7 +25,7 @@ typedef enum value (*ptr)(enum value, enum signals, funcv); // pointer to get_ne
 
 enum value get_new_value(enum value, enum signals, funcv);
 enum value get_limit_value(enum value, enum digit, ptr, enum states);
-
+enum digit get_new_dig(enum states, enum signals, enum digit);
 
 enum states current_state = standby;
 enum signals signal = idle;
@@ -35,14 +35,14 @@ enum value current_value = null;
 funcv callback_get_value;
 ptr callback_get_limit_value;
 
-const char dotsa = 0x01;
+/*const char dotsa = 0x01;
 const char dotsb = 0x02;
 const char dotsd = 0x04;
 char dotse = 0x08;
 const char dotnull = 0x00;
 const char dotsf = 0x10;
 const char dotsg = 0x20;
-const char dotsi = 0x40;
+const char dotsi = 0x40;*/
 
 /*void symcreate(char sym)
 {
@@ -270,25 +270,7 @@ int main()
 	while(1)
 	{
 		current_value = get_new_value(current_value, signal, callback_get_value);
-		if(current_value == null) PORTA = (1 << PA0)|(1 << PA5);
-		if(current_value == one) PORTA = (1 << PA1)|(1 << PA5);
-		//init_state(current_state, signal);
-		//modeHandler();
-		//current_state = new_state(current_state, signal);
-		//ptr = get_value_address(current_state, signal, dig, v);
-		//signal = idle;
-		/*if(current_state == standby) PORTA = (1 << PA0)|(1 << PA5);
-		if(current_state == code) PORTA = (1 << PA1)|(1 << PA5);
-		if(current_state == vb) PORTA = (1 << PA3)|(1 << PA5);
-		if(current_state == va) PORTA = (1 << PA4)|(1 << PA5);
-		if(current_state == configuration) PORTA = (1 << PA0)|(1 << PA7);
-		if(current_state == time) PORTA = (1 << PA1)|(1 << PA7);
-		if(current_state == rd) PORTA = (1 << PA3)|(1 << PA7);
-		if(current_state == power) PORTA = (1 << PA4)|(1 << PA7);*/
-		//if(ptr == (v + 0)) PORTA = (1 << PA0)|(1 << PA5);
-		//if(ptr == (v + 1)) PORTA = (1 << PA1)|(1 << PA5);
-		//if(ptr == (v + 2)) PORTA = (1 << PA3)|(1 << PA5);
-		//if(ptr == (v + 3)) PORTA = (1 << PA4)|(1 << PA5);
+
 	}
 }
 
@@ -453,54 +435,48 @@ enum states new_state(enum states current_state, enum signals sgn)
 	return st;
 }
 
-/*
-char* get_value_address(enum states st, enum signals sgn, enum digit current_digit, char* array_values)
+enum digit get_new_dig(enum states st, enum signals sgn, enum digit current_digit)
 {
-	static char* return_address;
+	static enum digit d;
 	switch(sgn)
 	{
 		case pc7:
 			switch(st)
 			{
 				case standby:
-					return NULL;
+					d = current_digit;
 				break;
 
 				case code:
 					switch(current_digit)
 					{
 						case dig1:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig2:
-							dig = dig1;
-							return_address = (array_values + dig1);
+							d = dig1;
 						break;
 
 						case dig3:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 					}
 				break;
 
 				case vb:
-					return NULL;
+					d = current_digit;
 				break;
 
 				case va:
 					switch(current_digit)
 					{
 						case dig2:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig3:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 					}
 				break;
@@ -509,18 +485,15 @@ char* get_value_address(enum states st, enum signals sgn, enum digit current_dig
 					switch(current_digit)
 					{
 						case dig1:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig2:
-							dig = dig1;
-							return_address = (array_values + dig1);
+							d = dig1;
 						break;
 
 						case dig3:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 					}
 				break;
@@ -529,33 +502,29 @@ char* get_value_address(enum states st, enum signals sgn, enum digit current_dig
 					switch(current_digit)
 					{
 						case dig0:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig1:
-							dig = dig0;
-							return_address = (array_values + dig0);
+							d = dig0;
 						break;
 
 						case dig2:
-							dig = dig1;
-							return_address = (array_values + dig1);
+							d = dig1;
 						break;
 
 						case dig3:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 					}
 				break;
 
 				case rd:
-					return_address = NULL;
+					d = current_digit;
 				break;
 
 				case power:
-					return_address = NULL;
+					d = current_digit;
 				break;
 			}
 		break;
@@ -564,44 +533,39 @@ char* get_value_address(enum states st, enum signals sgn, enum digit current_dig
 			switch(st)
 			{
 				case standby:
-					return NULL;
+					d = current_digit;
 				break;
 
 				case code:
 					switch(current_digit)
 					{
 						case dig1:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 
 						case dig2:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig3:
-							dig = dig1;
-							return_address = (array_values + dig1);
+							d = dig1;
 						break;
 					}
 				break;
 
 				case vb:
-					return NULL;
+					d = current_digit;
 				break;
 
 				case va:
 					switch(current_digit)
 					{
 						case dig2:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig3:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 					}
 				break;
@@ -610,18 +574,15 @@ char* get_value_address(enum states st, enum signals sgn, enum digit current_dig
 					switch(current_digit)
 					{
 						case dig1:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 
 						case dig2:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig3:
-							dig = dig1;
-							return_address = (array_values + dig1);
+							d = dig1;
 						break;
 					}
 				break;
@@ -630,135 +591,38 @@ char* get_value_address(enum states st, enum signals sgn, enum digit current_dig
 					switch(current_digit)
 					{
 						case dig0:
-							dig = dig1;
-							return_address = (array_values + dig1);
+							d = dig1;
 						break;
 
 						case dig1:
-							dig = dig2;
-							return_address = (array_values + dig2);
+							d = dig2;
 						break;
 
 						case dig2:
-							dig = dig3;
-							return_address = (array_values + dig3);
+							d = dig3;
 						break;
 
 						case dig3:
-							dig = dig0;
-							return_address = (array_values + dig0);
+							d = dig0;
 						break;
 					}
 				break;
 
 				case rd:
-					return_address = NULL;
+					d = current_digit;
 				break;
 
 				case power:
-					return_address = NULL;
+					d = current_digit;
 				break;
 			}
 		break;
 
-        default:
-        break;
-	}
-	return return_address;
-}*/
-enum digit get_new_dig(enum states st, enum signals sgn, enum digit current_digit)
-{
-	switch(sgn)
-	{
-		case pc7:
-			switch(st)
-			{
-				case standby:
-					return current_digit;
-				break;
-
-				case code:
-					switch(current_digit)
-					{
-						case dig1:
-							return dig3;
-						break;
-
-						case dig2:
-							return dig1;
-						break;
-
-						case dig3:
-							return dig2;
-						break;
-					}
-				break;
-
-				case vb:
-					return current_digit;
-				break;
-
-				case va:
-					switch(current_digit)
-					{
-						case dig2:
-							return dig3;
-						break;
-
-						case dig3:
-							return dig2;
-						break;
-					}
-				break;
-
-				case configuration:
-					switch(current_digit)
-					{
-						case dig1:
-							return dig3;
-						break;
-
-						case dig2:
-							return dig1;
-						break;
-
-						case dig3:
-							return dig2;
-						break;
-					}
-				break;
-
-				case time:
-					switch(current_digit)
-					{
-						case dig0:
-							return dig3;
-						break;
-
-						case dig1:
-							return dig0;
-						break;
-
-						case dig2:
-							return dig1;
-						break;
-
-						case dig3:
-							return dig2;
-						break;
-					}
-				break;
-
-				case rd:
-					return current_digit;
-				break;
-
-				case power:
-					return current_digit;
-				break;
-			}
+		default:
+			d = current_digit;
 		break;
 	}
+	return d;
 }
 
 enum value get_new_value(enum value current_value, enum signals sg, enum value (*f)(enum value v))
