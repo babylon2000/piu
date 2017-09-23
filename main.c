@@ -1,6 +1,6 @@
-#include <avr/io.h>
-#include <util/delay.h>
-#include <avr/interrupt.h>
+//#include <avr/io.h>
+//#include <util/delay.h>
+//#include <avr/interrupt.h>
 #include <stdio.h>
 
 void init_register(void);
@@ -10,7 +10,7 @@ enum signals {idle, pd6, pc5, pc3, pc4, pc6, pc7};
 enum digit {dig0, dig1, dig2, dig3};
 enum value {null, one, two, three, four, five, six, seven, eight, nine};
 
-volatile static uint8_t porthistory = 0xff;
+//volatile static uint8_t porthistory = 0xff;
 volatile unsigned int cnt3 = 0, cnt7 = 0;
 
 char v[4];
@@ -249,7 +249,7 @@ void showsym(char sym1, char sym2, char sym3, char sym4, const char dots)
 
 }*/
 
-void modeHandler()
+/*void modeHandler()
 {
 	if((PIND&(1 << PD6)) == 0)
 	{
@@ -257,15 +257,15 @@ void modeHandler()
 		if((PIND&(1 << PD6)))
 			signal = pd6;
 	}
-}
+}*/
 
 
 int main()
 {
-	init_register();
+	//init_register();
 	callback_get_value = get_value;
 	callback_get_limit_value = get_new_value;
-	sei();
+	//sei();
 
 	while(1)
 	{
@@ -283,11 +283,9 @@ enum states new_state(enum states current_state, enum signals sgn)
 			switch(sgn)
 			{
 				case pd6:
-					signal = idle;
 					st = code;
 				break;
 				default:
-					signal = idle;
 					st =  standby;
 				break;
 			}
@@ -296,11 +294,9 @@ enum states new_state(enum states current_state, enum signals sgn)
 			switch(sgn)
 			{
 				case pd6:
-					signal = idle;
 					st = vb;
 				break;
 				default:
-					signal = idle;
 					st = code;
 				break;
 			}
@@ -309,11 +305,9 @@ enum states new_state(enum states current_state, enum signals sgn)
 			switch(sgn)
 			{
 				case pd6:
-					signal = idle;
 					st = va;
 				break;
 				default:
-					signal = idle;
 					st = vb;
 				break;
 			}
@@ -322,11 +316,9 @@ enum states new_state(enum states current_state, enum signals sgn)
 			switch(sgn)
 			{
 				case pd6:
-					signal = idle;
 					st = configuration;
 				break;
 				default:
-					signal = idle;
 					st = va;
 				break;
 			}
@@ -336,23 +328,11 @@ enum states new_state(enum states current_state, enum signals sgn)
 			switch(sgn)
 			{
 				case pd6:
-					st = standby;
-					signal = idle;
-				break;
-
-				case pc4:
 					st = time;
-					signal = idle;
-				break;
-
-				case pc6:
-					st = power;
-					signal = idle;
 				break;
 
 				default:
 					st = configuration;
-					signal = idle;
 				break;
 			}
 		break;
@@ -361,23 +341,11 @@ enum states new_state(enum states current_state, enum signals sgn)
 			switch(sgn)
 			{
 				case pd6:
-					st = standby;
-					signal = idle;
-				break;
-
-				case pc4:
 					st = rd;
-					signal = idle;
-				break;
-
-				case pc6:
-					st = configuration;
-					signal = idle;
 				break;
 
 				default:
 					st = time;
-					signal = idle;
 				break;
 			}
 		break;
@@ -386,23 +354,11 @@ enum states new_state(enum states current_state, enum signals sgn)
 			switch(sgn)
 			{
 				case pd6:
-					st = standby;
-					signal = idle;
-				break;
-
-				case pc4:
 					st = power;
-					signal = idle;
-				break;
-
-				case pc6:
-					st = time;
-					signal = idle;
 				break;
 
 				default:
 					st = rd;
-					signal = idle;
 				break;
 			}
 		break;
@@ -412,22 +368,10 @@ enum states new_state(enum states current_state, enum signals sgn)
 			{
 				case pd6:
 					st = standby;
-					signal = idle;
-				break;
-
-				case pc4:
-					st = configuration;
-					signal = idle;
-				break;
-
-				case pc6:
-					st = rd;
-					signal = idle;
 				break;
 
 				default:
 					st = power;
-					signal = idle;
 				break;
 			}
 		break;
@@ -699,7 +643,7 @@ enum value get_value(enum value current_value)
 
 
 
-void init_register(void)
+/*void init_register(void)
 {
 	DDRB |= 0x1A;
 	DDRD |= 0x18;
@@ -711,9 +655,9 @@ void init_register(void)
 	DDRA |= 0xff;
 	GICR |= (1 << PCIE1);
 	PCMSK1 |= ((1 << PCINT11)|(1 << PCINT12)|(1 << PCINT14)|(1 << PCINT15)|(1 << PCINT13));
-}
+}*/
 
-ISR(PCINT1_vect)
+/*ISR(PCINT1_vect)
 {
 	uint8_t changebits;
 	changebits = PINC ^ porthistory;
@@ -745,4 +689,4 @@ ISR(PCINT1_vect)
 	{
 		signal = pc5;
 	}
-}
+}*/
