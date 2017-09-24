@@ -11,20 +11,28 @@ enum digit {dig0, dig1, dig2, dig3};
 enum value {null, one, two, three, four, five, six, seven, eight, nine};
 
 //volatile static uint8_t porthistory = 0xff;
-volatile unsigned int cnt3 = 0, cnt7 = 0;
+volatile unsigned int cnt3 = 0, cnt7 = 0, cnt4 = 0, cnt6 = 0;
 
-char v[4];
-char* vptr = v;
+unsigned char v[4];
+unsigned char* vptr = v;
 
 enum states new_state(enum states, enum signals);
-char* get_value_address(enum states, enum signals, enum digit, char*);
+/**************prototypes for forward value************************/
 enum value get_value(enum value);
+enum value get_value_for_hhour(enum value);
+enum value get_value_for_lhour(enum value);
+enum value get_value_for_hminutes(enum value);
+/******************************************************************/
 
+/****************prototypes for backforward value*****************/
+enum value get_bvalue(enum value);
+enum value get_bvalue_for_hhour(enum value);
+enum value get_bvalue_for_lhour(enum value);
+enum value get_bvalue_for_hminutes(enum value);
+/******************************************************************/
 typedef enum value (*funcv)(enum value);
-typedef enum value (*ptr)(enum value, enum signals, funcv); // pointer to get_new_value();
 
 enum value get_new_value(enum value, enum signals, funcv);
-enum value get_limit_value(enum value, enum digit, ptr, enum states);
 enum digit get_new_dig(enum states, enum signals, enum digit);
 
 enum states current_state = standby;
@@ -33,7 +41,6 @@ enum digit dig = dig0;
 enum value current_value = null;
 
 funcv callback_get_value;
-ptr callback_get_limit_value;
 
 /*const char dotsa = 0x01;
 const char dotsb = 0x02;
@@ -264,7 +271,6 @@ int main()
 {
 	//init_register();
 	callback_get_value = get_value;
-	callback_get_limit_value = get_new_value;
 	//sei();
 
 	while(1)
