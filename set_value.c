@@ -19,7 +19,7 @@ void set_value(unsigned char* data, enum states st, enum digit d, gnv val)
 		break;
 
 		case code:
-			data[0] = 'S';
+			data[0] = 'C';
 			if(d == dig1)
 			{
 				current_value = val(current_value, signal, get_value, get_bvalue);
