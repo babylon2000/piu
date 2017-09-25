@@ -2,8 +2,6 @@
 
 //volatile static uint8_t porthistory = 0xff;
 //volatile unsigned int cnt3 = 0, cnt7 = 0, cnt4 = 0, cnt6 = 0;
-
-unsigned char v[4];
 //unsigned char* vptr = v;
 
 #include "prototype.h"
@@ -19,7 +17,7 @@ int main(int argc, char **argv) {
 
 	while(1)
 	{
-
+		set_value(v, current_state, dig, get_new_value);
 	}
 	return 0;
 }
