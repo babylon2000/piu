@@ -1,6 +1,6 @@
 #include "prototype.h"
 
-enum value get_value_for_hhour(enum value current_value)
+enum value get_value_for_hminutes(enum value current_value)
 {
 	enum value new_value;
 	switch(current_value)
@@ -14,6 +14,18 @@ enum value get_value_for_hhour(enum value current_value)
 		break;
 
 		case two:
+			new_value = three;
+		break;
+
+		case three:
+			new_value = four;
+		break;
+
+		case four:
+			new_value = five;
+		break;
+
+		case five:
 			new_value = null;
 		break;
 	}
