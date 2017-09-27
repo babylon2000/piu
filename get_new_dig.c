@@ -1,4 +1,4 @@
-#include "prototype.h"
+#include "include/prototype.h"
 
 enum digit get_new_dig(enum states st, enum signals sgn, enum digit current_digit)
 {

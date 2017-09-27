@@ -1,4 +1,4 @@
-#include "prototype.h"
+#include "include/prototype.h"
 
 enum value get_new_value(enum value current_value, enum signals sg, funcv forward, funcv backforward)
 {

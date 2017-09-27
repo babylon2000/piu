@@ -3,9 +3,9 @@
  * освобождение памяти произойдет после успешной передачи данных!
  */
 #include <stdlib.h>
-#include "prototype.h"
-#include "crc8.h"
-#include "frame_creator.h"
+#include "include/prototype.h"
+#include "include/crc8.h"
+#include "include/frame_creator.h"
 
 #define FRAME_LEN	8
 #define START_BYTE	0x01

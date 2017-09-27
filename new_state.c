@@ -1,4 +1,4 @@
-#include "prototype.h"
+#include "include/prototype.h"
 
 enum states new_state(enum states current_state, enum signals sgn)
 {
