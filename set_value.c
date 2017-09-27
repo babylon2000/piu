@@ -25,18 +25,21 @@ void set_value(unsigned char* data, enum states st, enum digit d, gnv val)
 			//data[3] = CHAR_PREFIX;
 			if(d == dig1)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[1] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[1] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 			if(d == dig2)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[2] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[2] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 			if(d == dig3)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[3] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[3] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 		break;
 
@@ -52,57 +55,63 @@ void set_value(unsigned char* data, enum states st, enum digit d, gnv val)
 			data[1] = 'A';
 			if(d == dig2)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[2] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[2] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 			if(d == dig3)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[3] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[3] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 		break;
 
 		case configuration:
-			data[1] = 'P';
+			data[0] = 'P';
 			if(d == dig1)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[1] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[1] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 			if(d == dig2)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[2] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[2] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 			if(d == dig3)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[3] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[3] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 		break;
 
 		case time:
 			if(d == dig0)
 			{
-				current_value = val(current_value, signal, get_value_for_hhour, get_bvalue_for_hhour);
+				current_value = val(data[0] - CHAR_PREFIX, signal, get_value_for_hhour, get_bvalue_for_hhour);
 				data[0] = current_value + CHAR_PREFIX;
 			}
 			if(d == dig1)
 			{
-				if((data[0] == 0x30) || (data[0] == 0x31)) current_value = val(current_value, signal, get_value, get_bvalue);
-				if(data[0] == 0x32) current_value = val(current_value, signal, get_value_for_lhour, get_bvalue_for_lhour);
+				if((data[0] == 0x30) || (data[0] == 0x31)) current_value = val(data[1] - CHAR_PREFIX, signal, get_value, get_bvalue);
+				if(data[0] == 0x32) current_value = val(data[1] - CHAR_PREFIX, signal, get_value_for_lhour, get_bvalue_for_lhour);
 				data[1] = current_value + CHAR_PREFIX;
 			}
 			if(d == dig2)
 			{
-				current_value = val(current_value, signal, get_value_for_hminutes, get_bvalue_for_hminutes);
+				current_value = val(data[2] - CHAR_PREFIX, signal, get_value_for_hminutes, get_bvalue_for_hminutes);
 				data[2] = current_value + CHAR_PREFIX;
 			}
 			if(d == dig3)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[3] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[3] = current_value + CHAR_PREFIX;
 			}
+			current_value = null;
 		break;
 
 		case rd:
@@ -116,8 +125,9 @@ void set_value(unsigned char* data, enum states st, enum digit d, gnv val)
 			data[0] = 'P';
 			if(d == dig1)
 			{
-				current_value = val(current_value, signal, get_value, get_bvalue);
+				current_value = val(data[1] - CHAR_PREFIX, signal, get_value, get_bvalue);
 				data[1] = current_value + CHAR_PREFIX;
+				current_value = null;
 			}
 		break;
 	}
