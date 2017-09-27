@@ -133,6 +133,24 @@ void symcreate(char sym)
 			set_pin_high(PORTA, PA6);
 			set_pin_low(PORTC, PC2);
 			break;
+		case 'r':
+			set_pin_low(PORTA, PA5);
+			set_pin_low(PORTA, PA7);
+			set_pin_low(PORTC, PC0);
+			set_pin_low(PORTD, PD3);
+			set_pin_high(PORTB, PB1);
+			set_pin_low(PORTA, PA6);
+			set_pin_high(PORTC, PC2);
+			break;
+		case 'd':
+			set_pin_low(PORTA, PA5);
+			set_pin_high(PORTA, PA7);
+			set_pin_high(PORTC, PC0);
+			set_pin_high(PORTD, PD3);
+			set_pin_high(PORTB, PB1);
+			set_pin_low(PORTA, PA6);
+			set_pin_high(PORTC, PC2);
+			break;
 		case 'N':
 		default:
 			set_pin_low(PORTA, PA5);
