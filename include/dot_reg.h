@@ -17,6 +17,5 @@
 #define LED_DOT9                7
 #define LED_DOT11               0
 //включение точки
-#define LED_DOT_COM             2
 
 #endif /* DOT_REG_H_ */

@@ -13,9 +13,6 @@ enum signals {idle, pd6, pc5, pc3, pc4, pc6, pc7};
 enum digit {dig0, dig1, dig2, dig3};
 enum value {null, one, two, three, four, five, six, seven, eight, nine};
 
-
-unsigned char v[4];
-
 enum states new_state(enum states, enum signals);
 //**************prototypes for forward value************************/
 enum value get_value(enum value);

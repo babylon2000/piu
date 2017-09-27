@@ -8,22 +8,21 @@
 
 volatile static uint8_t porthistory = 0xff;
 volatile unsigned int cnt3 = 0, cnt7 = 0, cnt4 = 0, cnt6 = 0;
-//unsigned char* vptr = v;
 
 #include "include/crc8.h"
 #include "include/prototype.h"
 #include "include/frame_creator.h"
-#include "include/symcreate.h"
-#include "include/dotout.h"
+#include "include/showsym.h"
 
 void init_register(void);
+void modeHandler(void);
 
 enum states current_state = standby;
 enum signals signal = idle;
 enum digit dig = dig1;
 enum value current_value = null;
 
-//unsigned char a[8];
+unsigned char v[4];
 
 int main(int argc, char **argv) {
 
@@ -31,17 +30,31 @@ int main(int argc, char **argv) {
 	sei();
 	while(1)
 	{
+		showsym(v, 0x00);
+		modeHandler();
 		current_state = new_state(current_state, signal);
 		dig = get_new_dig(current_state, signal, dig);
 		set_value(v, current_state, dig, get_new_value);
-		/*unsigned char* f = frame_creator(v, current_state, crc8);
-		for(int i = 0; i < 8; i++)
-		{
-			a[i] = f[i];
-		}
-		free(f);*/
+		signal = idle;
 	}
 	return 0;
+}
+
+void modeHandler()
+{
+	if((PIND&(1 << PD6)) == 0)
+	{
+		_delay_ms(40);
+		if((PIND&(1 << PD6)))
+		{
+			signal = pd6;
+			v[0] = 0x30;
+			v[1] = 0x30;
+			v[2] = 0x30;
+			v[3] = 0x30;
+		}
+
+	}
 }
 
 void init_register(void)
@@ -79,12 +92,14 @@ ISR(PCINT1_vect)
 
 	if((changebits&(1 << PINC4)))
 	{
-		signal = pc4;
+		cnt4++;
+		if((cnt4%2 == 0) && (cnt4 != 0)) signal = pc4;
 	}
 
 	if((changebits&(1 << PINC6)))
 	{
-		signal = pc6;
+		cnt6++;
+		if((cnt6%2 == 0) && (cnt6 != 0)) signal = pc6;
 	}
 
 	if((changebits&(1 << PINC5)))
@@ -92,3 +107,4 @@ ISR(PCINT1_vect)
 		signal = pc5;
 	}
 }
+/**********************************************************************/
