@@ -25,5 +25,4 @@ void uart_send_package(unsigned char* package, char len)
 		uart_send_byte(*(package + i));
 	}
 	sei();
-	return 0;
 }
