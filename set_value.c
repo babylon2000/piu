@@ -122,10 +122,13 @@ void set_value(unsigned char* data, enum states st, enum digit d, gnv val)
 		break;
 
 		case power:
+			dig = dig1;
 			data[0] = 'P';
+			data[2] = 'N';
+			data[3] = 'N';
 			if(d == dig1)
 			{
-				current_value = val(data[1] - CHAR_PREFIX, signal, get_value, get_bvalue);
+				current_value = val(data[1] - CHAR_PREFIX, signal, get_value_for_hhour, get_bvalue_for_hhour);
 				data[1] = current_value + CHAR_PREFIX;
 				current_value = null;
 			}
