@@ -7,21 +7,20 @@
 #define LEN	4
 #define MYUBRR 95
 
-#define blink_on(port, pin)	port |= pin
-#define blink_off(port, pin) port &=~ pin
-
 volatile static uint8_t porthistory = 0xff;
 volatile unsigned int cnt3 = 0, cnt7 = 0, cnt4 = 0, cnt6 = 0, cnt5 = 0;
 
 #include "include/crc8.h"
 #include "include/prototype.h"
 #include "include/frame_creator.h"
+#include "include/frame_quiz.h"
 #include "include/showsym.h"
 #include "include/uart.h"
 
 void init_register(void);
 void modeHandler(void);
 void btn_pc5_handler(enum states, enum signals);
+void init_timer(void);
 
 enum states current_state = standby;
 enum signals signal = idle;
@@ -31,10 +30,12 @@ enum value current_value = null;
 unsigned char v[4];
 unsigned char* vptr = v;
 char dots = 0x00;
+volatile unsigned char enable_quiz = 0;
 
 int main(int argc, char **argv) {
 
 	init_register();
+	init_timer();
 	uart_init(MYUBRR);
 	sei();
 	while(1)
@@ -42,10 +43,19 @@ int main(int argc, char **argv) {
 		showsym(v, dots);
 		modeHandler();
 		current_state = new_state(current_state, signal);
-		//if(signal == pc5) current_state = code;
 		dig = get_new_dig(current_state, signal, dig);
 		set_value(v, current_state, dig, get_new_value);
 		btn_pc5_handler(current_state, signal);
+		if(enable_quiz == 1)
+		{
+			//trans
+			cli();
+			unsigned char* fq = frame_quiz();
+			uart_send_package(fq, 2*LEN);
+			free(fq);
+			sei();
+			enable_quiz = 0;
+		}
 		signal = idle;
 	}
 	return 0;
@@ -63,6 +73,7 @@ void modeHandler()
 			v[1] = 0x30;
 			v[2] = 0x30;
 			v[3] = 0x30;
+			dots = 0x00;
 		}
 
 	}
@@ -75,7 +86,7 @@ void btn_pc5_handler(enum states st, enum signals sg)
 			if((st != standby) && (st != vb))
 			{
 				unsigned char* new_frame = frame_creator(v, st, crc8);
-				uart_send_package(new_frame, sizeof(new_frame)/sizeof(new_frame[0]));
+				uart_send_package(new_frame, 2*LEN);
 				dots = 0x02;
 				free(new_frame);//пока не определюсь с проверкой!
 			}
@@ -137,3 +148,17 @@ ISR(PCINT1_vect)
 	}
 }
 /**********************************************************************/
+
+ISR(TIMER1_OVF_vect)
+{
+	enable_quiz = 1;
+}
+
+#define PRIMARY_TCNT1       7936
+
+void init_timer(void)
+{
+	TCCR1B = (1 << CS12); //256-prescaler
+	TCNT1 = PRIMARY_TCNT1; // для того чтобы считать до 40 мс, после 40 мс отправится пакет опроса МПП
+	TIMSK = (1 << TOIE1);
+}
