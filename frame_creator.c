@@ -17,11 +17,11 @@ unsigned char* frame_creator(unsigned char* data, enum states st, crc8_t crc)
 	if(frame == NULL) goto fail;
 	frame[0] = START_BYTE;
 	frame[1] = st;
-	for(register int i = 0; i < (sizeof(data)/sizeof(data[0])); i++)
+	for(register int i = 0; i < FRAME_LEN/2; i++)
 	{
 		frame[i + 2] = data[i];
 	}
-	frame[6] = crc(data, sizeof(data)/sizeof(data[0]));
+	frame[6] = crc(data, FRAME_LEN/2);
 	frame[7] = FINISH_BYTE;
 
 	return frame;
