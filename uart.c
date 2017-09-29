@@ -11,7 +11,7 @@ void uart_init(unsigned int ubrr)
 	UCSR0C = (1 << URSEL0)|(1 << UPM01)|(1 << UCSZ01)|(1 << UCSZ00); // even parity, 1 stop bit, 8-bit frame
 }
 
-static void uart_send_byte(unsigned char byte)
+void uart_send_byte(unsigned char byte)
 {
 	while((UCSR0A&(1 << UDRE0)) == 0);
 	UDR0 = byte;
@@ -20,9 +20,13 @@ static void uart_send_byte(unsigned char byte)
 void uart_send_package(unsigned char* package, char len)
 {
 	cli();
-	for(register int i = 0; i < len; i++)
-	{
-		uart_send_byte(*(package + i));
-	}
+	uart_send_byte(*(package + 0));
+	uart_send_byte(*(package + 1));
+	uart_send_byte(*(package + 2));
+	uart_send_byte(*(package + 3));
+	uart_send_byte(*(package + 4));
+	uart_send_byte(*(package + 5));
+	uart_send_byte(*(package + 6));
+	uart_send_byte(*(package + 7));
 	sei();
 }
